@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="getData()">get data</button>
+    <pre id="info"></pre>
+
+    <script>
+      const info = document.querySelector("#info");
+
+      // 因為寫死了 localhost 所以用 127.0.0.1 是找不到的
+      // 除非用 '/address-book/api' 才能找的到
+      // 使用跨來源的話 cookei 也無法被記錄到
+      function getData() {
+        fetch("http://localhost:3001/try-sess", {
+          credentials:"include"
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            info.innerHTML = JSON.stringify(data, null, 4);
+          });
+      }
+    </script>
+  </body>
+</html>

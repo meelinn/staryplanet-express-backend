@@ -1,0 +1,30 @@
+<%- include("parts/html-head") %>
+    <%- include("parts/navbar") %>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <form method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp" name="email">
+                            <div class="form-text">
+                                <%= typeof email !=='undefined' ? email : "" %>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+                            <div class="form-text">
+                                <%= locals.password ? password : "" %>
+                                    <!-- 傳給 template 的變數都會變成 loacl 的屬性 -->
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <%- include("parts/scripts") %>
+            <%- include("parts/html-foot") %>

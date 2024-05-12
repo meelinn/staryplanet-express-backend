@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre id="info"></pre>
+
+    <script>
+        const info = document.querySelector('#info')
+        // 因為寫死了 localhost 所以用 127.0.0.1 是找不到的
+        // 除非用 '/address-book/api' 才能找的到
+        fetch('http://localhost:3001/address-book/api')
+        .then(r=>r.json())
+        .then(data=>{
+            info.innerHTML = JSON.stringify(data, null, 4);
+
+        });
+
+
+    </script>
+</body>
+</html>

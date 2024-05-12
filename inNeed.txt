@@ -1,0 +1,25 @@
+
+package.json: 
+
+這是 Node.js 專案的設定文件，其中包含專案的名稱、版本、依賴項等資訊。 你可以透過執行 npm init 指令來初始化一個 package.json 檔案。
+
+index.js
+
+（或其他入口文件）：這是專案的主要 JavaScript 文件，用於啟動應用程式和處理路由、中間件等。 你可以在這個文件中編寫應用程式的主要邏輯。
+
+.env 
+
+檔案：這是儲存環境變數的文件，用於設定敏感資訊如資料庫連線資訊等。 你可以建立一個名為 .env 的文件，並在其中設定像 DB_HOST、DB_USER、DB_PASS、DB_NAME 這樣的變數來儲存資料庫連線資訊。
+
+package-lock.json
+
+（可選）：這是一個自動生成的文件，用於鎖定專案的依賴項的版本，以確保團隊中的每個人都使用相同的依賴項版本。 你可以透過執行 npm install 指令來產生 package-lock.json 檔案。
+
+mysql2-connect.js
+
+
+package.json 
+
+檔案通常是手動建立的，但也可以透過執行 npm init 指令來自動產生。 當你執行 npm init 指令時，npm 會提出一系列問題，例如專案名稱、版本、描述等，然後根據你的答案產生一個新的 package.json 檔案。
+
+除了手動建立或透過 npm init 自動產生外，還有一些工具和框架也會自動產生 package.json 檔案。 例如，使用 create-react-app 建立新的 React 專案時，會自動產生一個包含必要資訊的 package.json 檔案。

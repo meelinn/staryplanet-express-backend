@@ -1,0 +1,108 @@
+<%- include("./../parts/html-head") %>
+    <%- include("../parts/navbar") %>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="?page=<%= page - 1 %>">Previous</a></li>
+                            <% for(let i=page-5; i<=page+5; i++) if(i>=1 && i<=totalPages) { 
+                                
+                                    const qs1 = {...qs, page: i};
+                                    // 把 object 轉換為 urlencoded 格式的字串 
+                                    const qs2 = new URLSearchParams(qs1).toString(); %>
+
+                                    <li class="page-item <%= i===page ? 'active' : '' %>">
+                                        <a class="page-link" href="?<%= qs2 %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <li class="page-item"><a class="page-link" href="?page=<%= page + 1 %>">Next</a>
+                                        </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-6">
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                            name="keyword" value="<%= keyword %>">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>刪除</th>
+                                <th>編號</th>
+                                <th>姓名</th>
+                                <th>信箱</th>
+                                <th>電話</th>
+                                <th>註冊日</th>
+                                <th>編輯</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let r of rows) {%>
+                                <tr>
+                                    <td>
+                                        <a href="javascript: deleteItem(<%= r.MemberID%>)">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                            </a>
+                                    </td>
+                                    <td>
+                                        <%= r.MemberID%>
+                                    </td>
+                                    <td>
+                                        <%= r.Username%>
+                                    </td>
+                                    <td>
+                                        <%= r.Email%>
+                                    </td>
+                                    <td>
+                                        <%= r.Phone%>
+                                    </td>
+                                    <td>
+                                        <%= r.RegistrationDate %>
+                                    </td>
+                                    <td>
+                                        <a href="/address-book/edit/<%= r.MemberID%>">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <%- include("../parts/scripts") %>
+
+        <script>
+            function deleteItem (MemberID) {
+                if(! confirm(`是否要刪除編號為 ${MemberID} 的資料?`)){
+                    return;
+                }
+
+                fetch(`/address-book/${MemberID}`,{
+                    method:'DELETE'
+                }).then(r=>r.json())
+                .then((result) => {
+                    console.log(result);
+                    if(result.affectedRows){
+                        // 刪除成功
+                        location.reload();
+                    } else{
+
+                    }
+                });
+            }
+            
+        </script>
+            <%- include("./../parts/html-foot") %>

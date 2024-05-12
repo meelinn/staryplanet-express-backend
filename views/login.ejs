@@ -1,0 +1,59 @@
+<%- include("parts/html-head") %> <%- include("parts/navbar") %>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">登入</h5>
+                            <form method="post" onsubmit="sendData(event)">
+                                <div class="mb-3">
+                                    <label for="account" class="form-label">account</label>
+                                    <input type="text" class="form-control" id="account" name="account"
+                                        oninput="fieldChanged(event)" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">password</label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        oninput="fieldChanged(event)" />
+                                </div>
+                                <button type="submit" class="btn btn-primary">登入</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("parts/scripts") %>
+            <script>
+                const data = { account: "", password: "" }; // 準備送出的資料
+
+                function fieldChanged(event) {
+                    const t = event.currentTarget;
+                    data[t.name] = t.value; // 把變動的欄位資料放到 data 裡
+                    console.log(data);
+                }
+
+                const sendData = async (e) => {
+                    e.preventDefault();
+
+                    // 空字串代表現在的 URL 也就是傳給自己
+                    const r = await fetch('', {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: { // 需要設定格式
+                            'content-Type': 'application/json'
+                        }
+                    });
+                    const result = await r.json();
+                    console.log({ result });
+                    if (result.success) {
+                        console.log(JSON.stringify(result, null, 4));
+                        alert("登入成功");
+                        location.href = "/";
+                    } else {
+                        alert("帳號或密碼錯誤");
+                    }
+                };
+            </script>
+            <%- include("parts/html-foot") %>

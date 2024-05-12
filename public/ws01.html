@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="doConnect()">連線</button>
+    <br />
+    <input type="text" id="myin" />
+    <button onclick="socket.send(myin.value)" disabled id="sendBtn">送出</button>
+    <br>
+    <div id="info"></div>
+    <script>
+      let socket;
+      // 連線時觸發
+      const myOpen = (event) => {
+        sendBtn.removeAttribute("disabled");
+      };
+
+      // 有訊息傳入時
+      const myMessage = (event) => {
+        info.innerHTML += `${event.data}<br>`;
+      };
+
+      //斷線時
+      const myClose = (event) => {
+        sendBtn.setAttribute("disabled", "true");
+      };
+
+
+      const doConnect = () => {
+        socket = new WebSocket(`ws://${location.hostname}:3070`); // 建立物件後, 即開始連線
+        socket.addEventListener("open", myOpen);
+        socket.addEventListener("message", myMessage);
+        socket.addEventListener("close", myClose);
+      };
+
+
+    </script>
+  </body>
+</html>

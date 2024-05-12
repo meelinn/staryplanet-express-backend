@@ -1,0 +1,219 @@
+<%- include("./../parts/html-head") %> <%- include("../parts/navbar") %>
+<style>
+  form .mb-3 .form-text {
+    color: red;
+  }
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">新增通訊錄</h5>
+
+          <form
+            name="form1"
+            onsubmit="sendData(event)"
+            enctype="application/x-www-form-urlencoded"
+          >
+            <div class="mb-3">
+              <label for="Username" class="form-label">** 姓名</label>
+              <input type="text" class="form-control" id="Username" name="Username" />
+              <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="Email" class="form-label">電子郵箱</label>
+              <input type="text" class="form-control" id="Email" name="Email" />
+              <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">密碼</label>
+                <input type="text" class="form-control" id="Password" name="Password" />
+                <div class="form-text"></div>
+              </div>
+            <div class="mb-3">
+              <label for="Phone" class="form-label">手機</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Phone"
+                name="Phone"
+              />
+              <div class="form-text"></div>
+            </div>
+            
+
+            <button type="submit" class="btn btn-primary">新增</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="successModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">新增結果</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" role="alert">資料新增成功</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          關閉
+        </button>
+        <a href="list.php" class="btn btn-primary">跳到列表頁</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="failureModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">新增失敗</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert" id="failureInfo">
+          資料新增失敗
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          關閉
+        </button>
+        <a href="list.php" class="btn btn-primary">跳到列表頁</a>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include("../parts/scripts") %>
+<script>
+  const { Username: nameEl, Email: emailEl, Phone: mobileEl } = document.form1;
+
+  const fields = [nameEl, emailEl, mobileEl];
+
+  function validateEmail(Email) {
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(Email);
+  }
+
+  function validateMobile(Phone) {
+    const re = /^09\d{2}-?\d{3}-?\d{3}$/;
+    return re.test(Phone);
+  }
+
+  function sendData(e) {
+    // 回復欄位的外觀
+    for (let el of fields) {
+      el.style.border = "1px solid #CCC";
+      el.nextElementSibling.innerHTML = "";
+    }
+
+    e.preventDefault(); // 不要讓表單以傳統的方式送出
+    let isPass = true; // 整個表單有沒有通過檢查
+
+    // TODO: 檢查各個欄位的資料, 有沒有符合規定
+    if (nameEl.value.length < 2) {
+      isPass = false; // 沒有通過檢查
+      nameEl.style.border = "1px solid red";
+      nameEl.nextElementSibling.innerHTML = "請填寫正確的姓名!";
+    }
+
+    if (emailEl.value && !validateEmail(emailEl.value)) {
+      isPass = false;
+      emailEl.style.border = "1px solid red";
+      emailEl.nextElementSibling.innerHTML = "請填寫正確的 Email !";
+    }
+
+    if (mobileEl.value && !validateMobile(mobileEl.value)) {
+      isPass = false;
+      mobileEl.style.border = "1px solid red";
+      mobileEl.nextElementSibling.innerHTML = "請填寫正確的手機號碼!";
+    }
+
+    // 有通過檢查才發送表單
+    if (isPass) {
+      const fd = new FormData(document.form1); // 沒有外觀的表單物件
+
+      const usp = new URLSearchParams(fd); // 做為表單資料轉換為 urlencoded 格式的轉換器
+
+      fetch(``, {
+        method: "POST",
+        body: usp.toString(), // 格式為 urlencoded
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            successModal.show();
+          } else {
+            // document.querySelector("#failureInfo").innerHTML = data.error;
+            // failureModal.show();
+            if(data.issues){
+                for(let issues of data.issues){
+                    const fieldID = issues.path[0];
+                    const field = document.querySelector('#'+fieldID);
+                    if(field){
+                        field.style.border = "1px solid red";
+                        field.nextElementSibling.innerHTML = issues.message;
+                    }
+                }
+            }
+          }
+        });
+      /*
+      fetch(`/address-book/add/multi`, {
+        method: "POST",
+        body: fd,
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            successModal.show();
+          } else {
+            document.querySelector("#failureInfo").innerHTML = data.error;
+            failureModal.show();
+          }
+        });
+        */
+    }
+  }
+
+  const successModal = new bootstrap.Modal("#successModal");
+  const failureModal = new bootstrap.Modal("#failureModal");
+</script>
+<%- include("../parts/html-foot") %>

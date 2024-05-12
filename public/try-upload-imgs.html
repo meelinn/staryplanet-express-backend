@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form name="form1" onsubmit="doUpload(event)">
+        <!-- multiple 上傳多個檔案 -->
+        <input type="file" name="photos" multiple accept="image/*">
+        <input type="submit">
+    </form>
+
+
+    <div class="container">
+    </div>
+
+    <script>
+        const container = document.querySelector(".container");
+
+        async function doUpload(event) {
+            event.preventDefault(); // 不要以傳統的方式送出表單
+
+            const fd = new FormData(document.form1);
+
+            /*
+            fetch("/try-uploads", {
+              method: "POST",
+              body: fd,
+            })
+              .then((r) => r.json())
+              .then((data) => {
+                console.log(data);
+              });
+          */
+            /*
+            const r = await fetch("/try-uploads", {
+              method: "POST",
+              body: fd,
+            });
+            const data = await r.json();
+            console.log(data);
+            */
+
+            // 用 async/await 不要混用 .then()
+            const data = await fetch("/try-uploads", {
+                method: "POST",
+                body: fd,
+            }).then((r) => r.json());
+
+            console.log(data);
+
+            container.innerHTML = data.map(({ filename }) => {
+                return `
+                 <div><img src="/imgs/${filename}" alt="" width="300" /></div>
+                `;
+            }).join("");
+        }
+
+    </script>
+</body>
+
+</html>

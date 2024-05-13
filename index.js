@@ -575,7 +575,7 @@ app.get("/a.html", (req, res) => {
 // 404 頁面
 // *** 此段放在所有路由設定的後面 ***
 app.use((req, res) => {
-  res.status(404).send("<h2>你是路痴嗎????</h2>");
+  res.status(404).send("<h2>404 Not Found </h2>");
 });
 
 const port = process.env.WEB_PORT || 3005;

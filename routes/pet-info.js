@@ -10,19 +10,13 @@ const getListData = async (req) => {
   //   member_id = res.locals.jwt.id;
   // }
 
-  let orderBy=''
-  //id,age
-  let orderName=''
-  //ASC,DESC
   //子查詢:作為查詢喜愛表用
   let subQuery = `
   (
     SELECT * FROM pet_like WHERE fk_member_id=${member_id}
   ) pl `;
 
-  // SELECT * FROM `address_book` WHERE `name` LIKE '%詩涵%'
   let keyword = req.query.keyword || "";
-  
 
   let where = " WHERE 1 ";
   if (keyword) {
@@ -37,21 +31,7 @@ const getListData = async (req) => {
     `;
   }
 
-
   let query = [];
-  //第一版:.join(" OR "))放錯位置
-  // if (req.query.pet_color) {
-  //   const petColor = Array.isArray(req.query.pet_color) ? req.query.pet_color : [req.query.pet_color];
-  //   query.push(petColor.map((v)=>(`(pet_color = ${db.escape(v)})`)).join(" OR "));
-  // }
-
-//第二版:沒有使用IN會導致錯誤
-  // if (req.query.pet_type) {
-  //   const petType = Array.isArray(req.query.pet_type) ? req.query.pet_type : [req.query.pet_type];
-  //   const petTypeConditions = petType.map(v => `pet_type = ${db.escape(v)}`);
-  //   query.push(`(${petTypeConditions.join(" OR ")})`); 
-  // }
-
 
   if (req.query.pet_type) {
     const petType = Array.isArray(req.query.pet_type) ? req.query.pet_type : req.query.pet_type.split(',');
@@ -83,7 +63,7 @@ if (req.query.pet_gender) {
 }
 
 
-    // 如果有查询条件，则将其添加到 SQL 查询语句中
+    // 如果有查詢條件，則加進SQL中
     if (query.length > 0) {
       where  += " AND " + query.join(" AND ");
     }
@@ -98,7 +78,6 @@ if (req.query.pet_gender) {
   }
 
 
-
   // 多層的展開, totalRows 總筆數
   const [[{ totalRows }]] = await db.query(sql);
   const totalPages = Math.ceil(totalRows / perPage); // 總頁數
@@ -110,11 +89,7 @@ if (req.query.pet_gender) {
       redirect = `?page=${totalPages}`;
       return { success: false, redirect };
     }
-    //原始本的SQL2
-    // const sql2 = `SELECT * FROM pet_info JOIN shelter_info ON pet_info.fk_shelter_id = shelter_info.shelter_id ${where} ORDER BY pet_id DESC LIMIT ${
-    //   (page - 1) * perPage
-    // }, ${perPage}`;
-
+  
     //加入喜愛清單的SQL2 //子查詢一定要用別名
    const sql2 = `SELECT pi.*,pl.pet_like_id FROM 
    pet_info pi
@@ -143,10 +118,6 @@ if (req.query.pet_gender) {
   };
 
 };
-// 
-// router.get("/",async(req,res)=>{
-
-// })
 
 router.get("/api",async (req,res)=>{
   const data = await getListData(req);
@@ -154,42 +125,6 @@ router.get("/api",async (req,res)=>{
  
 });
 
-// router.get("/query",async (req,res)=>{
-//   const data = await getListData(req);
-//   let query = req.query.query || "";
-//   if (query) {
-//     // 避免 SQL injection
-//     where += ` AND (
-//     \`pet_gender\` = ${db.escape(`${query}`)||''}
-//     AND
-//     \`pet_type\` = ${db.escape(`${query}`)||''}
-//     AND
-//     \`pet_color\` = ${db.escape(`${query}`)||''}
-//     AND
-//     \`pet_age\` >= ${db.escape(`${query}`)||''}
-//     AND
-//     \`pet_age\` <= ${db.escape(`${query}`)||''}
-//     AND
-//     \`shelter_address\` = ${db.escape(`${query}`)||''}
-//     )
-//     `;
-//   }
-//   res.json({success:true,data:r,query});
-// });
-
-// router.get("/api/:pet_id", async (req, res) => {
-//   const pet_id = +req.params.pet_id || 0;
-//   console.log('Received pet_id:', pet_id);
-//   if(! pet_id){
-//     return res.redirect("undefined");
-//  }
-// if(!rows.length){return res.redirect('undefined')}
-
-//   const sql = `SELECT * FROM pet_info WHERE pet_id=${pet_id}`;
-//   const [rows] = await db.query(sql);
- 
-//   res.json(data);
-// });
 
 router.get("/api/:pet_id", async (req, res) => {
   const pet_id  = +req.params.pet_id || 0;
@@ -209,7 +144,7 @@ router.get("/api/:pet_id", async (req, res) => {
 
 //喜愛路由
 router.get("/jwt-pet-like", async (req, res) => {
-  let member_id=req.query.member_id || 155;
+  let member_id=req.query.member_id || 0;
   let where = " WHERE 1 ";
   
   if (member_id) {

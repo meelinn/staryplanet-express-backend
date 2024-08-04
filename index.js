@@ -1,7 +1,6 @@
 import "dotenv/config.js";
 // 自己寫的程式要用相對路徑， 下載的程式就直接打他的名稱
 import express from "express";
-import sales from "./data/sales.json" assert { type: "json" };
 // import upload from "./utils/upload-imgs.js";
 import admin2Router from "./routes/admin2.js";
 import abrouter from "./routes/address-book.js";
@@ -208,12 +207,6 @@ app.get("/hello", (req, res) => {
 });
 app.get("/a.png", (req, res) => {
   res.send('<h2 style="color:red">save me</h2>');
-});
-
-app.get("/json-sales", (req, res) => {
-  res.locals.title = "JSON 測試 -" + res.locals.title;
-  res.locals.pageName = "json-sales";
-  res.render("json-sales", { sales });
 });
 
 app.get("/try-qs", (req, res) => {
